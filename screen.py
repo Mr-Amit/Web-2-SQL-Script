@@ -1,9 +1,9 @@
 import os
 import requests
-import pypyodbc as odbc
+import pypyodbc as odbc             #pip install pypyodbc
 from urllib.parse import urljoin
-from bs4 import BeautifulSoup
-import pandas as pd
+from bs4 import BeautifulSoup       #pip install beautifulsoup4
+import pandas as pd                 #pip install pandas
 
 #On line 28, I am downloading the files in C drive, Do change as per you preference
 #Filling 0 in PPWAP column for NULL values as 0 is never 
@@ -25,7 +25,7 @@ url = 'https://promo.betfair.com/betfairsp/prices'
 #Its a fix that the script would download the files into this folder and then import it back
 
 #Choose your preferred location to download the csv
-folder_location = r'D:\webscraping'
+folder_location = r'C:\webscraping'
 if not os.path.exists(folder_location):os.mkdir(folder_location)
 
 response = requests.get(url)
@@ -56,20 +56,23 @@ sql_insert ='''
     INSERT INTO bf_hist_data_place
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 '''
+Date = input("Enter DATE (DD-MM-YYYY) : ")
+Date = "".join(Date.split('-'))
+Date = int(Date[4:] + Date[2:4] + Date[:2])
 
 for link in soup.select("a[href$='.csv']"):
     
+    Fdate = str(link['href'])[-12:-4]
+    Fdate = "".join(Fdate.split('-'))
+    Fdate = int(Fdate[4:] + Fdate[2:4] + Fdate[:2])
     
-    if matc(link['href']):
+    if matc(link['href']) and Fdate <= Date and Fdate >= 20100101:
     
-        
         filename = os.path.join(folder_location,link['href'].split('/')[-1])
         
         with open(filename, 'wb') as f:
             f.write(requests.get(urljoin(url,link['href'])).content)
-            
-        
-                
+                   
         df = pd.read_csv(filename)
         rc = df.shape[0]
         
@@ -81,9 +84,6 @@ for link in soup.select("a[href$='.csv']"):
         records = df.values.tolist()
 
 
-
-        #print(connection_string(DRIVER, SERVER_NAME, DATABASE_NAME))
-        
         try:
             
             cursor.executemany(sql_insert, records)
