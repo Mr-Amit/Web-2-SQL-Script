@@ -56,17 +56,21 @@ sql_insert ='''
     INSERT INTO bf_hist_data_place
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 '''
+
+################## Here you Enter the date #################                                    DATE
+#if it is 05-01-2010, It gets converted to int 20110805
 Date = input("Enter DATE (DD-MM-YYYY) : ")
 Date = "".join(Date.split('-'))
 Date = int(Date[4:] + Date[2:4] + Date[:2])
 
 for link in soup.select("a[href$='.csv']"):
-    
+    ######### Fdate is extracted from the name of the csv file ######
     Fdate = str(link['href'])[-12:-4]
     Fdate = "".join(Fdate.split('-'))
     Fdate = int(Fdate[4:] + Fdate[2:4] + Fdate[:2])
     
-    if matc(link['href']) and Fdate <= Date and Fdate >= 20100101:
+    ############# Here the condition is being checked ############                              Condition
+    if matc(link['href']) and Fdate <= Date and Fdate >= 20100101:                              #Between Date and 01-01-2010
     
         filename = os.path.join(folder_location,link['href'].split('/')[-1])
         
