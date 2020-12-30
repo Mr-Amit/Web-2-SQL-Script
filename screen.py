@@ -5,9 +5,9 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import pandas as pd
 
-
+#On line 28, I am downloading the files in C drive, Do change as per you preference
 #Filling 0 in PPWAP column for NULL values as 0 is never 
-#occuring the database in the PPWAP
+# occuring in the PPWAP column of the database 
 
 #Depends on your settings...
 DRIVER = 'SQL Server'
